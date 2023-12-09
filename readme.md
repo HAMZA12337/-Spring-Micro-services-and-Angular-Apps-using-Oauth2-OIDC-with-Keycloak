@@ -62,5 +62,7 @@ We can Display the content of this token by acceding to this :https://jwt.io/
 
 # Recieve New token through sending refresh_token
 
-- To that that we will copy the refresh token shown above and we will send a new query to the token service 
+- To do that we will copy the refresh token shown above and we will send a new query to the token service 
      ![Alt text](image-7.png)
+
+     

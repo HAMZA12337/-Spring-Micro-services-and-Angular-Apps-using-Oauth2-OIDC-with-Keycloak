@@ -27,7 +27,13 @@ public String customers(Model model){
 
 
 
+    @GetMapping("/products")
 
+    public String products (Model model){
+
+
+        model.addAttribute("products",null);
+        return "products" ;}
 
 
 

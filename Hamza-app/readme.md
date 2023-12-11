@@ -21,3 +21,21 @@ The following guides illustrate how to use some features concretely:
 * [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
 * [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
 * [Handling Form Submission](https://spring.io/guides/gs/handling-form-submission/)
+
+### Google Authentication
+
+* First of All  we will create our roject in google console 
+
+![img.png](img.png)
+
+* Then we will ceate credentials
+
+![img_1.png](img_1.png)
+
+* Create client OAuth ID
+
+![img_2.png](img_2.png)
+
+*After Getting your id-Client * Secret Client you should dd this conf in you application properties  file
+
+![img_3.png](img_3.png)

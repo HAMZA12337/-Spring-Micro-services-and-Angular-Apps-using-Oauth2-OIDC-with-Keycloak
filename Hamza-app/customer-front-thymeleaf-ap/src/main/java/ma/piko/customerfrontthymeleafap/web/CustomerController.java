@@ -3,6 +3,7 @@ package ma.piko.customerfrontthymeleafap.web;
 
 import ma.piko.customerfrontthymeleafap.entities.Customer;
 import ma.piko.customerfrontthymeleafap.repositories.CustomerRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,13 +21,17 @@ public class CustomerController {
         this.customerRepository = customerRepository;
     }
 
+
+
+
+
     @GetMapping("/customers")
-
-public String customers(Model model){
-
-        List<Customer> listCustomers =customerRepository.findAll();
-        model.addAttribute("customers",listCustomers);
-    return "customers" ;}
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String customers(Model model) {
+        List<Customer> customerList = customerRepository.findAll();
+        model.addAttribute("customers", customerList);
+        return "customers";
+    }
 
 
 

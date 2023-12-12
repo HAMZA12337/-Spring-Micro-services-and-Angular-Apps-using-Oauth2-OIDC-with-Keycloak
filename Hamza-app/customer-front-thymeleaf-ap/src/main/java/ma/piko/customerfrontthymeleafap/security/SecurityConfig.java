@@ -4,6 +4,7 @@ package ma.piko.customerfrontthymeleafap.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
@@ -13,9 +14,14 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private ClientRegistrationRepository clientRegistrationRepository;
+
+    public SecurityConfig(ClientRegistrationRepository clientRegistrationRepository) {
+        this.clientRegistrationRepository = clientRegistrationRepository;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception{
@@ -24,22 +30,22 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req-> req.requestMatchers("/","/webjars/**","h2-console/**").permitAll())
                 .authorizeHttpRequests(req->req.anyRequest().authenticated())
                 .oauth2Login(Customizer.withDefaults())
-//                .logout((logout) -> logout
-//                       // .logoutSuccessHandler(oidcLogoutSuccessHandler())
-//                        .logoutSuccessUrl("/").permitAll()
-//                        .clearAuthentication(true)
-//                        .deleteCookies("JSESSIONID"))
-//                .exceptionHandling(eh->eh.accessDeniedPage("/notAutorized"))
+                .logout((logout) -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler())
+                        .logoutSuccessUrl("/").permitAll()
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID"))
+                .exceptionHandling(eh->eh.accessDeniedPage("/notAutorized"))
                 .build();
+
 
     }
 
-//    private LogoutSuccessHandler oidcLogoutSuccessHandler() {
-//        final OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler =
-//                new OidcClientInitiatedLogoutSuccessHandler(this.clientRegistrationRepository);
-//        oidcLogoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}?logoutsuccess=true");
-//        return oidcLogoutSuccessHandler;
-//    }
+    private LogoutSuccessHandler oidcLogoutSuccessHandler() {
+        final OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler =
+                new OidcClientInitiatedLogoutSuccessHandler(this.clientRegistrationRepository);
+        oidcLogoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}?logoutsuccess=true");
+        return oidcLogoutSuccessHandler;
+    }
 
 
 }

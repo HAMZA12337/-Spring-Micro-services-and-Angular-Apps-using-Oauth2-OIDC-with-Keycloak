@@ -35,16 +35,16 @@ IIn this set of tasks, the goal is to set up and configure Keycloak, an open-sou
 ************************************************************************************************************************************************************************
   ## Discover KeyCloak Space
 
-![Alt text](image-1.png)
+![Alt text](./Assets/image-1.png)
 
   # Create Realm
-  ![Alt text](image.png)
+  ![Alt text](./Assets/image.png)
   # Create Users
-  ![Alt text](image-2.png)
+  ![Alt text](./Assets/image-2.png)
   # Create Roles
-  ![Alt text](image-3.png)
+  ![Alt text](./Assets/image-3.png)
   # Assign Roles to users
-  ![Alt text](image-4.png)
+  ![Alt text](./Assets/image-4.png)
 
   
 ************************************************************************************************************************************************************************
@@ -53,16 +53,16 @@ IIn this set of tasks, the goal is to set up and configure Keycloak, an open-sou
 
 # Get token 
 
-![Alt text](image-5.png)
+![Alt text](./Assets/image-5.png)
 
 We can Display the content of this token by acceding to this :https://jwt.io/
 
-![Alt text](image-6.png)
+![Alt text](./Assets/image-6.png)
 
 
 # Recieve New token through sending refresh_token
 
 - To do that we will copy the refresh token shown above and we will send a new query to the token service 
-     ![Alt text](image-7.png)
+     ![Alt text](./Assets/image-7.png)
 
      

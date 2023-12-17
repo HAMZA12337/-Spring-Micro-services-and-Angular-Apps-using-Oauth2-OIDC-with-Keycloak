@@ -34,14 +34,18 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception{
         return http
                 .csrf(Customizer.withDefaults())
-                .authorizeHttpRequests(req-> req.requestMatchers("/","/webjars/**","h2-console/**","static/**").permitAll())
+                .authorizeHttpRequests(req-> req.requestMatchers("/","/webjars/**","h2-console/**","/oauth2Login/**").permitAll())
                 .authorizeHttpRequests(req->req.anyRequest().authenticated())
-                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(al->
+                        al.loginPage("/oauth2Login")
+                                .defaultSuccessUrl("/"))
                 .logout((logout) -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler())
                         .logoutSuccessUrl("/").permitAll()
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID"))
-                .exceptionHandling(eh->eh.accessDeniedPage("/notAuthorized"))
+                .exceptionHandling(eh->eh
+                        .accessDeniedPage("/notAuthorized")
+                )
                 .build();
 
 

@@ -8,27 +8,23 @@
     <title>Products</title>
     <link rel="stylesheet" href="webjars/bootstrap/5.3.2/css/bootstrap.min.css">
     <style>
-    body {
 
-    align-items: center;
-    justify-content: center;
-    }
+
+        .part1 {
+            width: 100%;
+            height: 100%;
+        }
+
+        .part1 img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* This property ensures that the image covers the entire container */
+        }
     </style>
 </head>
 <body>
-<div layout:fragment="content" >
-    <div class="ps-3">
-        <div class="card">
-            <div >
-
-                <h2 class="alert-danger  text-danger">Not Authorized</h2>
-                <img class="align-content-center" th:src="@{https://zuziko.com/wp-content/uploads/Fix-WordPress-401-Error.png}"
-                     alt="nj"/>
-            </div>
-        </div>
-    </div>
+<div class="part1" layout:fragment="content">
+    <img class="align-content-center" th:src="@{https://zuziko.com/wp-content/uploads/Fix-WordPress-401-Error.png}" alt="nj"/>
 </div>
-
-
 </body>
 </html>

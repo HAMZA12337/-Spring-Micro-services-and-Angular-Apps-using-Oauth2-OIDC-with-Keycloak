@@ -122,8 +122,27 @@ grant_type=password&username=hamza-obihi&password=1234&client_id=app-client&clie
 ![img_20.png](./Assets/img_20.png)
 ![img_21.png](./Assets/img_21.png)
 
-The problem that will face is in the getting token there is no roles
+The problem that will face is in the getting token there is no roles -> we will fixe by checking Realm roles and Add to ID token 
 
 ![img_22.png](./Assets/img_22.png)
 
 ![img_23.png](./Assets/img_23.png)
+
+
+# Add PreAuthorize
+
+![img.png](img.png)
+
+* And we will get something like that :
+
+![img_1.png](img_1.png)
+
+### How to assign Default roles during  registration phase ->{KeyCloak} <Realm Settings -> User  Registration -> Assign Roles >
+
+![img_2.png](img_2.png)
+
+### Add password Politics  {Authentication -> Policies -> Password Policy}
+
+![img_3.png](img_3.png)
+
+

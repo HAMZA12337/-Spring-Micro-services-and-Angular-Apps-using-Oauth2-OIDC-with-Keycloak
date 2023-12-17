@@ -78,7 +78,7 @@ The following guides illustrate how to use some features concretely:
 
                add credentials for each user {In my case password = 1234}
 
-![img_12.png](img_12.png)
+![img_12.png](./Assets/img_12.png)
 
                 Second user user 2
 
@@ -95,6 +95,12 @@ The following guides illustrate how to use some features concretely:
 ![img_15.png](./Assets/img_15.png)
 
                 Test KeyCloak Authentication
+POST http://localhost:8080/realms/Braimi-app/protocol/openid-connect/token
+Accept: application/json
+Content-Type:application/x-www-form-urlencoded
+
+grant_type=password&username=hamza-obihi&password=1234&client_id=app-client&client_secret={}
+
 
 ![img_16.png](./Assets/img_16.png)
 

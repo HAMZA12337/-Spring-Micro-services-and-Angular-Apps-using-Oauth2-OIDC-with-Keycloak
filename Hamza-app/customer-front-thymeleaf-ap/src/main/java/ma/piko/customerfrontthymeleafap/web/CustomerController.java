@@ -58,8 +58,10 @@ public class CustomerController {
 
 
 
+    @GetMapping("/notAuthorized")
+    public String notAuthorized(){
 
-
+        return "notAuthorized" ;}
 
 
 }

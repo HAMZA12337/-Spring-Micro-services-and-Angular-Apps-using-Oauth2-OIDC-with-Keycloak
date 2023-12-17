@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="template"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+    <link rel="stylesheet" href="webjars/bootstrap/5.3.2/css/bootstrap.min.css">
+    <style>
+    body {
+
+    align-items: center;
+    justify-content: center;
+    }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" >
+    <div class="ps-3">
+        <div class="card">
+            <div >
+
+                <h2 class="alert-danger  text-danger">Not Authorized</h2>
+                <img class="align-content-center" th:src="@{https://zuziko.com/wp-content/uploads/Fix-WordPress-401-Error.png}"
+                     alt="nj"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

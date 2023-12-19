@@ -34,8 +34,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception{
         return http
                 .csrf(Customizer.withDefaults())
-                .authorizeHttpRequests(req-> req.requestMatchers("/","/webjars/**","h2-console/**","/oauth2Login/**").permitAll())
+                .authorizeHttpRequests(req-> req.requestMatchers("/","/oauth2Login/**","/webjars/**","/h2-console/**").permitAll())
                 .authorizeHttpRequests(req->req.anyRequest().authenticated())
+                .headers(h->h.frameOptions(fo->fo.disable()))
+                .csrf(csrf->csrf.ignoringRequestMatchers("/h2-console/**"))
                 .oauth2Login(al->
                         al.loginPage("/oauth2Login")
                                 .defaultSuccessUrl("/"))

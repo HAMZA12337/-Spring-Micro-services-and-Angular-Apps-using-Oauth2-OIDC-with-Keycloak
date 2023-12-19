@@ -95,11 +95,11 @@ The following guides illustrate how to use some features concretely:
 ![img_15.png](./Assets/img_15.png)
 
                 Test KeyCloak Authentication
-POST http://localhost:8080/realms/Braimi-app/protocol/openid-connect/token
-Accept: application/json
-Content-Type:application/x-www-form-urlencoded
-
-grant_type=password&username=hamza-obihi&password=1234&client_id=app-client&client_secret={}
+    POST http://localhost:8080/realms/Braimi-app/protocol/openid-connect/token
+    Accept: application/json
+    Content-Type:application/x-www-form-urlencoded
+    
+    grant_type=password&username=hamza-obihi&password=1234&client_id=app-client&client_secret={}
 
 
 ![img_16.png](./Assets/img_16.png)
@@ -131,18 +131,70 @@ The problem that will face is in the getting token there is no roles -> we will 
 
 # Add PreAuthorize
 
-![img.png](img.png)
+![img.png](./Assets/imga.png)
 
 * And we will get something like that :
 
-![img_1.png](img_1.png)
+![img_1.png](./Assets/imga_1.png)
 
 ### How to assign Default roles during  registration phase ->{KeyCloak} <Realm Settings -> User  Registration -> Assign Roles >
 
-![img_2.png](img_2.png)
+![img_2.png](./Assets/imga_2.png)
 
 ### Add password Politics  {Authentication -> Policies -> Password Policy}
 
-![img_3.png](img_3.png)
+![img_3.png](./Assets/imga_3.png)
+
+
+### Personalize Login page 
+
+* First of we should add this config to SecurityFilterChain
+
+      .oauth2Login(al->
+      al.loginPage("/oauth2Login")
+      .defaultSuccessUrl("/"))
+
+![img_4.png](./Assets/imga_4.png)
+
+* Result :
+![img_5.png](./Assets/imga_5.png)
+
+
+# Part 2 : Inventory MicroService
+
+* Installing  Dependencies
+
+![img.png](img.png)
+
+* Config application.Properties
+
+      spring.application.name=inventory-service
+      server.port=8089
+      spring.datasource.url=jdbc:h2:mem:products-db
+      spring.h2.console.enabled=true
+      
+      spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8080/realms/Braimi-app
+      spring.security.oauth2.resourceserver.jwt.jwk-set-uri=http://localhost:8080/realms/Braimi-app/protocol/openid-connect/certs
+      
+  * Testing OurEnd Point
+
+        POST http://localhost:8080/realms/Braimi-app/protocol/openid-connect/token
+        Accept: application/json
+        Content-Type:application/x-www-form-urlencoded
+      
+        grant_type=password&username=hamza-obihi&password=1234&client_id=app-client&client_secret=8hjsnTgTng57sIWYyO3nZWhQcVNP670G
+      
+      
+        ###
+        
+        GET http://localhost:8089/products
+        Authorization: Bearer {token}
+
+
+
+
+
+
+
 
 

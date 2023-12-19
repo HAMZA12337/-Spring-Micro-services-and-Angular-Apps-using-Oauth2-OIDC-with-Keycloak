@@ -164,7 +164,7 @@ The problem that will face is in the getting token there is no roles -> we will 
 
 * Installing  Dependencies
 
-![img.png](img.png)
+![img.png](./Assets/imgk.png)
 
 * Config application.Properties
 
@@ -180,7 +180,7 @@ The problem that will face is in the getting token there is no roles -> we will 
 
         POST http://localhost:8080/realms/Braimi-app/protocol/openid-connect/token
         Accept: application/json
-        Content-Type:application/x-www-form-urlencoded
+        Content-Type: application/x-www-form-urlencoded
       
         grant_type=password&username=hamza-obihi&password=1234&client_id=app-client&client_secret=8hjsnTgTng57sIWYyO3nZWhQcVNP670G
       
@@ -190,11 +190,71 @@ The problem that will face is in the getting token there is no roles -> we will 
         GET http://localhost:8089/products
         Authorization: Bearer {token}
 
+# Angular Client-Side Rendering (CSR):
+
+* Generate new Project
+
+      ng new  Piko-front-angular-app --no-standalone
+
+* Installing Bootstrap Dependencies
+
+       npm install bootstrap bootstrap-icons
+
+* Adding  Bootstrap Links
+
+        "styles": [
+        "src/styles.css",
+        "node_modules/bootstrap/dist/css/bootstrap.min.css"
+        ],
+        "scripts": [
+        "node_modules/bootstrap/dist/js/bootstrap.bundle.js"
+        ]
+
+![img_1.png](img_1.png)
+
+* Import Bootstrap Library in Style.css file
+
+      @import "bootstrap-icons/font/bootstrap-icons.min.css";
+* Generate new Components 
+
+      ng g c customers products
 
 
 
+## PART 2: to Secure our Angular app we should create the second Client in the same realm
 
+![img_2.png](img_2.png)
 
+* Test our Client
 
+      POST http://localhost:8080/realms/Braimi-app/protocol/openid-connect/token
+      Accept: application/json
+      Content-Type: application/x-www-form-urlencoded
+      
+      grant_type=password&username=hamza-obihi&password=1234&client_id=Angular-app-client
 
+![img_3.png](img_3.png)
 
+* Install KeyCloak Adapter
+                                          
+        npm i keycloak-angular
+              
+
+* Create Factory Function to initialize KeyCloak in app.module file
+
+      function initializeKeycloak(keycloak: KeycloakService) {
+            return () =>
+            keycloak.init({
+            config: {
+            url: 'http://localhost:8080',
+            realm: 'Braimi-app',
+            clientId: 'Angular-app-client'
+            },
+            initOptions: {
+            onLoad: 'check-sso',
+            checkLoginIframe : true,
+            silentCheckSsoRedirectUri:
+            window.location.origin + '/assets/silent-check-sso.html'
+            }
+          });
+      }

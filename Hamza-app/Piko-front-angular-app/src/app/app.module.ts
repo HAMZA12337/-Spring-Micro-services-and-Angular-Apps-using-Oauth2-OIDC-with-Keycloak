@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { CustomersComponent } from './customers/customers.component';
 import { ProductsComponent } from './products/products.component';
 import {HttpClientModule } from '@angular/common/http';
-import { KeycloakService } from 'keycloak-angular';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
 
 function initializeKeycloak(keycloak: KeycloakService) {
@@ -14,7 +14,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     keycloak.init({
       config: {
         url: 'http://localhost:8080',
-        realm: '  Braimi-app',
+        realm: 'Braimi-app',
         clientId: 'Angular-app-client'
       },
       initOptions: {
@@ -36,9 +36,13 @@ function initializeKeycloak(keycloak: KeycloakService) {
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    KeycloakAngularModule
   ],
-  providers: [],
+  providers: [
+    {provide : APP_INITIALIZER, deps : [KeycloakService],useFactory : initializeKeycloak, multi : true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+

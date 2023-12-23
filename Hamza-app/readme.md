@@ -164,7 +164,7 @@ The problem that will face is in the getting token there is no roles -> we will 
 
 * Installing  Dependencies
 
-![img.png](./Assets/imgk.png)
+![./Assets/imgc.png](./Assets/imgk.png)
 
 * Config application.Properties
 
@@ -210,7 +210,7 @@ The problem that will face is in the getting token there is no roles -> we will 
         "node_modules/bootstrap/dist/js/bootstrap.bundle.js"
         ]
 
-![img_1.png](img_1.png)
+![img_1.png](./Assets/img_1c.png)
 
 * Import Bootstrap Library in Style.css file
 
@@ -223,7 +223,7 @@ The problem that will face is in the getting token there is no roles -> we will 
 
 ## PART 2: to Secure our Angular app we should create the second Client in the same realm
 
-![img_2.png](img_2.png)
+![img_2.png](./Assets/img_2c.png)
 
 * Test our Client
 
@@ -233,11 +233,11 @@ The problem that will face is in the getting token there is no roles -> we will 
       
       grant_type=password&username=hamza-obihi&password=1234&client_id=Angular-app-client
 
-![img_3.png](img_3.png)
+![img_3.png](./Assets/img_3c.png)
 
 * Install KeyCloak Adapter
                                           
-        npm i keycloak-angular
+        npm i keycloak-angular keycloak-js
               
 
 * Create Factory Function to initialize KeyCloak in app.module file
@@ -258,3 +258,102 @@ The problem that will face is in the getting token there is no roles -> we will 
             }
           });
       }
+
+
+* Generate Guards Component
+
+      ng g g guards/auth
+
+add this config to Auth.Guard.tds
+
+    import { Injectable } from '@angular/core';
+    import {
+    ActivatedRouteSnapshot,
+    Router,
+    RouterStateSnapshot
+    } from '@angular/router';
+    import { KeycloakAuthGuard, KeycloakService } from 'keycloak-angular';
+    
+    @Injectable({
+    providedIn: 'root'
+    })
+    export class AuthGuard extends KeycloakAuthGuard {
+    constructor(
+    protected override readonly router: Router,
+    protected readonly keycloak: KeycloakService
+    ) {
+    super(router, keycloak);
+    }
+    
+    public async isAccessAllowed(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+    ) {
+    // Force the user to log in if currently unauthenticated.
+    if (!this.authenticated) {
+    await this.keycloak.login({
+    redirectUri: window.location.origin
+    });
+    }
+    
+        // Get the roles required from the route.
+        const requiredRoles = route.data['roles'];
+    
+        // Allow the user to proceed if no additional roles are required to access the route.
+        if (!(requiredRoles instanceof Array) || requiredRoles.length === 0) {
+          return true;
+        }
+        // Allow the user to proceed if all the required roles are present.
+        return requiredRoles.every((role) => this.roles.includes(role));
+    }
+    }
+
+* To Secure Products Component
+
+
+    const routes: Routes = [
+    {path:"customers" , component:CustomersComponent},
+    
+    {path:"products" , component:ProductsComponent,canActivate:[AuthGuard],data:{roles:['ADMIN']}}
+    
+    ];
+
+* Generate Security Service Component
+
+           ng g s services/security
+add this configuration 
+    
+    import {Injectable} from "@angular/core";
+    import {KeycloakProfile} from "keycloak-js";
+    import {KeycloakEventType, KeycloakService} from "keycloak-angular";
+    
+    //@Injectable({providedIn : "root"})
+    export class SecurityService {
+    public profile? : KeycloakProfile;
+    constructor (public kcService: KeycloakService) {
+    this.init();
+    }
+    init(){
+      console.log("Init ....")
+      this.kcService.keycloakEvents$.subscribe({
+      next: (e) => {
+      console.log(e);
+      if (e.type == KeycloakEventType.OnAuthSuccess) {
+      console.log("OnAuthSuccess")
+      this.kcService.loadUserProfile().then(profile=>{
+      this.profile=profile;
+      });
+      }
+      },
+    error : err => {
+        console.log(err);
+        }  
+        });
+    }
+    public hasRoleIn(roles:string[]):boolean{
+        let userRoles = this.kcService.getUserRoles();
+        for(let role of roles){
+        if (userRoles.includes(role)) return true;
+        } return false;
+        }
+    }

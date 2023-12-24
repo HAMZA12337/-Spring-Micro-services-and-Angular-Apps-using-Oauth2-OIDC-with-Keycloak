@@ -20,13 +20,17 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.web.client.RestClient;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.*;
-
+import org.springframework.beans.factory.annotation.Value;
 
 @Controller
 public class CustomerController {
 
     private CustomerRepository customerRepository ;
     private ClientRegistrationRepository clientRegistrationRepository;
+    @Value("${inventory.service.base.uri}")
+    private String inventoryServiceBaseUri;
+
+
 
     public CustomerController(CustomerRepository customerRepository,ClientRegistrationRepository clientRegistrationRepository) {
         this.customerRepository = customerRepository;
@@ -48,21 +52,27 @@ public class CustomerController {
 
 
     @GetMapping("/products")
-
-    public String products (Model model){
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        OAuth2AuthenticationToken oAuth2AuthenticationToken= (OAuth2AuthenticationToken) authentication;
-        DefaultOidcUser oidcUser = (DefaultOidcUser) oAuth2AuthenticationToken.getPrincipal();
-        String jwtTokenValue=oidcUser.getIdToken().getTokenValue();
-        RestClient restClient = RestClient.create("http://localhost:8089");
-        List<Product> products = restClient.get()
-                .uri("/products")
-                .headers(httpHeaders -> httpHeaders.set(HttpHeaders.AUTHORIZATION, "Bearer "+jwtTokenValue))
-                .retrieve()
-                .body(new ParameterizedTypeReference<>(){});
-        model.addAttribute("products",products);
-        return "products";}
+    public String products(Model model) {
+        try {
+            SecurityContext context = SecurityContextHolder.getContext();
+            Authentication authentication = context.getAuthentication();
+            OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
+            DefaultOidcUser oidcUser = (DefaultOidcUser) oAuth2AuthenticationToken.getPrincipal();
+            String jwtTokenValue = oidcUser.getIdToken().getTokenValue();
+            RestClient restClient = RestClient.create(inventoryServiceBaseUri);
+            List<Product> products = restClient.get()
+                    .uri("/products")
+                    .headers(httpHeaders -> httpHeaders.set(HttpHeaders.AUTHORIZATION, "Bearer " + jwtTokenValue))
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+            model.addAttribute("products", products);
+            return "products";
+        }
+        catch (Exception e){
+            return "redirect:/notAuthorized";
+        }
+    }
 
 
 

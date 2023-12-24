@@ -458,3 +458,109 @@ add this config to Auth.Guard.tds
   * Create the image of this jar
 
            docker build . -t inventory-service:v1
+
+    * Now in our Docker Compose we will Add {Keycloak + Postgres+MariaDb+PHPmyAdmin+Inventory Service}
+
+          services:
+          mysql-db-inventory:
+          image: mariadb:10.6
+          container_name: mysql-db-inventory
+          restart: always
+          volumes:
+          - mysql_data:/var/lib/mysql
+          environment:
+          MYSQL_DATABASE: inventory-db
+          MYSQL_USER: hamza
+          MYSQL_PASSWORD: 1234
+          MYSQL_ROOT_PASSWORD: admin
+          ports:
+            - 3306:3306
+            healthcheck:
+            test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+            timeout: 5s
+            retries: 10
+            phpmyadmin:
+            image: phpmyadmin
+            restart: always
+            ports:
+            - 9999:80
+            environment:
+            PMA_HOST: mysql-db-inventory
+            PMA_PORT: 3306
+            PMA_ARBITRARY: 1
+      
+          enset-inventory-service:
+          build: ./inventory-service
+          container_name: enset-inventory-service
+          ports:
+          - '8089:8089'
+          expose:
+            - '8089'
+            restart: always
+            depends_on:
+            - mysql-db-inventory
+            environment:
+            - DB_URL=jdbc:mysql://mysql-db-inventory:3306/inventory-db
+          #      - JWT_ISSUER_URI=http://localhost:8080/realms/Braimi-app
+          #      - JWT_JWK_SET_URI=http://keycloak:8080/realms/Braimi-app/protocol/openid-connect/certs
+      
+          #  ############################   Postgres+KeyCloak  ##################################################################
+          postgres-service:
+          image: postgres
+          container_name: postgres-service
+          volumes:
+          - postgres_data_enset:/var/lib/postgresql/data
+          environment:
+          POSTGRES_DB: keycloak_enset_db
+          POSTGRES_USER: keycloak
+          POSTGRES_PASSWORD: k1234
+          ports:
+            - '5432:5432'
+            expose:
+            - '5432'
+            healthcheck:
+            test: "exit 0"
+            pgadmin4:
+            image: dpage/pgadmin4
+            container_name: pgadmin4
+            restart: always
+            ports:
+            - "8888:80"
+            environment:
+            PGADMIN_DEFAULT_EMAIL: hamza@gmail.com
+            PGADMIN_DEFAULT_PASSWORD: azer
+            volumes:
+            - pgadmin_data:/var/lib/pgadmin
+            keycloak:
+            image: quay.io/keycloak/keycloak:latest
+            environment:
+            KC_DB: postgres
+            KC_DB_URL: jdbc:postgresql://postgres-service:5432/keycloak_enset_db
+            KC_DB_USERNAME: keycloak
+            KC_DB_PASSWORD: k1234
+            KEYCLOAK_ADMIN: admin
+            KC_HTTP_ENABLED: "true"
+            KC_HOSTNAME_STRICT_HTTPS: "false"
+            KEYCLOAK_ADMIN_PASSWORD: admin
+            command:
+            - start-dev
+            restart: always
+            ports:
+            - '8080:8080'
+            expose:
+            - '8080'
+            depends_on:
+            - postgres-service
+      
+          volumes:
+          mysql_data:
+          postgres_data_enset:
+          pgadmin_data:
+      
+* Keycloak---->   {username:admin,password :admin}
+* Postgres---->   {username:hamza@gmail.com,password : azer}       
+
+
+### Dockerize Angular part 
+
+
